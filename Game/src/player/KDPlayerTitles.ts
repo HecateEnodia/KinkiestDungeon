@@ -531,7 +531,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     // Player has been put in jail
     "Jailed": {
         "unlockCondition": () => {
-            return (KDGameData?.PrisonerState == "Jail")
+            return (KDGameData?.PrisonerState == "jail")
         },
         "priority": 11,
         "color": "#fa7305",
