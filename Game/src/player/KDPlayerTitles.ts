@@ -630,7 +630,8 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     // Player has been recruited
     "Recruited": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruited`) != undefined)
+            let faction = KDGameData.RecruitedFaction
+            return (faction != undefined && faction != '')
         },
         "priority": 3,
         "color": "#ffffff",
@@ -1393,7 +1394,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     // -----------------------------------------------------------------------------------------
     "Bountyhunter": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferBountyhunter`) != undefined)
+            return (KDGameData.RecruitedFaction == "Bountyhunter")
         },
         "priority": 8,
         "color": KDBaseForest,
@@ -1411,7 +1412,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     },
     "Bandit": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferBandit`) != undefined)
+            return (KDGameData.RecruitedFaction == "Bandit")
         },
         "priority": 8,
         "color": KDBaseOrange,
@@ -1429,7 +1430,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     },
     "Alchemist": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferAlchemist`) != undefined)
+            return (KDGameData.RecruitedFaction == "Alchemist")
         },
         "priority": 8,
         "color": KDBaseCyan,
@@ -1447,7 +1448,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     },
     "Nevermere": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferWolfgirl`) != undefined)
+            return (KDGameData.RecruitedFaction == "Nevermere")
         },
         "priority": 8,
         "color": KDBaseTeal,
@@ -1465,7 +1466,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     },
     "Apprentice": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferApprentice`) != undefined)
+            return (KDGameData.RecruitedFaction == "Apprentice")
         },
         "priority": 8,
         "color": KDBaseLightBlue,
@@ -1483,7 +1484,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     },
     "Dressmaker": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferDressmaker`) != undefined)
+            return (KDGameData.RecruitedFaction == "Dressmaker")
         },
         "priority": 8,
         "color": KDBaseRibbon,
@@ -1521,7 +1522,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     */
     "Elemental": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferElemental`) != undefined)
+            return (KDGameData.RecruitedFaction == "Elemental")
         },
         "priority": 8,
         "color": KDBaseRed,
@@ -1539,7 +1540,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     },
     "Dragon": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferDragonheart`) != undefined)
+            return (KDGameData.RecruitedFaction == "Dragon")
         },
         "priority": 8,
         "color": "#b9451d",
@@ -1557,7 +1558,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     },
     "Maidforce": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferMaid`) != undefined)
+            return (KDGameData.RecruitedFaction == "Maidforce")
         },
         "priority": 8,
         "color": KDBaseWhite,
@@ -1575,7 +1576,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     },
     "Bast": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferBast`) != undefined)
+            return (KDGameData.RecruitedFaction == "Bast")
         },
         "priority": 8,
         "color": KDBaseYellowGreen,
@@ -1593,7 +1594,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     },
     "Elf": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferElf`) != undefined)
+            return (KDGameData.RecruitedFaction == "Elf")
         },
         "priority": 8,
         "color": KDBaseMint,
@@ -1611,7 +1612,7 @@ let KDPlayerTitles: Record<string, KDPlayerTitle> = {
     },
     "AncientRobot": {
         "unlockCondition": () => {
-            return (KinkyDungeonFlags.get(`Recruit_OfferAncientRobot`) != undefined)
+            return (KDGameData.RecruitedFaction == "AncientRobot")
         },
         "priority": 8,
         "color": "#888888",
