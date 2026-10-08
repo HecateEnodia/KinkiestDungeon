@@ -1557,7 +1557,7 @@ let KDOnEatScripts: Record<string, (x: number, y: number, tile: any, food: KDFoo
 		KinkyDungeonSendTextMessage(10, TextGet("KDFoodPoison", {
 			Food: TextGet("KDFoodName" + food.Food).toLocaleLowerCase()
 		}), KDBaseRed, 8);
-		KinkyDungeonApplyBuffToEntity(KDPlayer(), KDPoisonSleepLong);
+		KDApplyBuffToEntity(KDPlayer(), KDPoisonSleepLong);
 		let sfx = "Damage";
 		KinkyDungeonPlaySound(KinkyDungeonRootDirectory + "Audio/" + sfx + ".ogg");
 	},
@@ -1565,8 +1565,8 @@ let KDOnEatScripts: Record<string, (x: number, y: number, tile: any, food: KDFoo
 		KinkyDungeonSendTextMessage(10, TextGet("KDFoodArousal", {
 			Food: TextGet("KDFoodName" + food.Food).toLocaleLowerCase()
 		}), KDBaseRed, 8);
-		KinkyDungeonApplyBuffToEntity(KDPlayer(), KDArousalOverTime);
-		KinkyDungeonApplyBuffToEntity(KDPlayer(), KDArousalOverTime2);
+		KDApplyBuffToEntity(KDPlayer(), KDArousalOverTime);
+		KDApplyBuffToEntity(KDPlayer(), KDArousalOverTime2);
 		
 		let sfx = "Damage";
 		KinkyDungeonPlaySound(KinkyDungeonRootDirectory + "Audio/" + sfx + ".ogg");
@@ -3248,7 +3248,7 @@ function KinkyDungeonMove(moveDirection: {x: number, y: number }, delta: number,
 		} else if (KDCrackableTiles.includes(moveObject)) {
 			// If the player is trying to move into a cracked wall while they have a pickaxe in their inventory, let's let them mine from it
             if (KDEntityHasBuff(KinkyDungeonPlayerEntity,"TryingToMine") && KinkyDungeonPlayerDamage.digSpell) {
-				KinkyDungeonApplyBuffToEntity(KinkyDungeonPlayerEntity, {
+				KDApplyBuffToEntity(KinkyDungeonPlayerEntity, {
                     id: "TryingToMine",
                     type: "confirm",
                     power: 1,
@@ -3284,7 +3284,7 @@ function KinkyDungeonMove(moveDirection: {x: number, y: number }, delta: number,
 				}
 			} else if (KinkyDungeonPlayerDamage.digSpell) {
                 KinkyDungeonSendActionMessage(2, TextGet("KDWallAttemptToMine"), KDBaseWhite, 2);
-                KinkyDungeonApplyBuffToEntity(KinkyDungeonPlayerEntity, {
+                KDApplyBuffToEntity(KinkyDungeonPlayerEntity, {
                     id: "TryingToMine",
                     type: "confirm",
                     power: 1,
@@ -3295,7 +3295,7 @@ function KinkyDungeonMove(moveDirection: {x: number, y: number }, delta: number,
 					KDWeapon(item));
 			})) {
                 KinkyDungeonSendActionMessage(2, TextGet("KDWallAttemptToMine"), KDBaseWhite, 2);
-                KinkyDungeonApplyBuffToEntity(KinkyDungeonPlayerEntity, {
+                KDApplyBuffToEntity(KinkyDungeonPlayerEntity, {
                     id: "TryingToMine",
                     type: "confirm",
                     power: 1,
@@ -3848,7 +3848,7 @@ function KDTickSensesTraining(player?: entity) {
 	let nearby = KDNearbyEnemies(KinkyDungeonPlayerEntity.x, KinkyDungeonPlayerEntity.y, KDGameData.MaxVisionDist + 1, undefined, true);
 	for (let enemy of nearby) {
 		if (!KDGameData.SeenEntities) KDGameData.SeenEntities = {};
-
+		if (enemy.temporary || enemy.maxlifetime) continue;
 		if (KDGameData.SeenEntities[enemy.id]) continue;
 		if (!KDHostile(enemy)) continue;
 		let playerDist = Math.max(Math.abs(enemy.x - KinkyDungeonPlayerEntity.x), Math.abs(enemy.y - KinkyDungeonPlayerEntity.y));
@@ -3857,10 +3857,12 @@ function KDTickSensesTraining(player?: entity) {
 
 		if (!canSee && canHear) {
 			KDGameData.SeenEntities[enemy.id] = true;
-			KDTickTraining("Senses", trainingLevel > 0, trainingLevel == 0, 
-				KDSensesTrainingMult, 1 + trainingLevel*.1);
+			KDTickTraining("Senses", true, false, 
+				KDSensesTrainingMult * 2, 4 + trainingLevel*.4);
 		} else if (canSee) {
 			KDGameData.SeenEntities[enemy.id] = true;
+			KDTickTraining("Senses", KinkyDungeonBlindLevel > 0, KinkyDungeonBlindLevel == 0, 
+				KDSensesTrainingMult, 1 + KinkyDungeonBlindLevel*.1);
 		}
 	}
 }
@@ -4250,6 +4252,33 @@ function KDGetByWeight(list: Record<string, number>): string {
 		}
 	}
 	return type;
+}
+
+
+/**
+ * Picks a string based on weights
+ * uses an Eps value which culls anything with lower weight than maxweight * eps
+ * @param list - a list of weights with string keys
+ * @returns - the key that was selected
+ */
+function KDCulledGetByWeight(list: Record<string, number>, eps: number = 0.05): string {
+	let weights: Record<string, number> = {};
+	let max = 0;
+
+	for (let obj of Object.entries(list)) {
+		weights[obj[0]] = obj[1];
+		max = Math.max(obj[1], max);
+	}
+
+	let weights2: Record<string, number> = {};
+
+	for (let obj of Object.entries(weights)) {
+		if (obj[1] >= max * eps) {
+			weights2[obj[0]] = obj[1];
+		}
+	}
+
+	return KDGetByWeight(weights2);
 }
 
 let KDKeyCheckers = {

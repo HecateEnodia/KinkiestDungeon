@@ -975,7 +975,7 @@ function KinkyDungeonSendDialogue(entity: entity, dialogue: string, color: strin
 				KinkyDungeonSendTextMessage(0, `${TextGet("Name" + entity.Enemy.name)}: ${dialogue}`, 
 				color, 0, false, false, entity, important ? undefined : "Dialogue");
 			}
-			KDEnemyAddSound(entity, 7);
+			KDEnemyAddSound(entity, 7, undefined, (KDToggles.MinorSoundDesc ? TextGet("KDAmbSound_Speech") : undefined));
 			if (KDRandom() < 0.5)
 				KDSendGagParticles(entity);
 		}
@@ -996,7 +996,8 @@ function KinkyDungeonSendDialogue(entity: entity, dialogue: string, color: strin
 				color, 3 + 0.7*duration);
 		}
 		if (!entity.player && dialogue) {
-			KDEnemyAddSound(entity, 12);
+			KDEnemyAddSound(entity, 12, undefined, 
+				(KDToggles.MinorSoundDesc ? TextGet("KDAmbSound_Speech") : undefined));
 			if (dialogue && KDCanHearEnemy(KDPlayer(), entity) || KDCanSeeEnemy(entity)) {
 				KinkyDungeonSendTextMessage(0, `${TextGet("Name" + entity.Enemy.name)}: ${dialogue}`, color, 0, false, false, entity, "Dialogue");
 			}
@@ -1680,7 +1681,7 @@ function KinkyDungeonUpdateStats(delta: number): void {
 	KDBoundPowerLevel += 0.1 * Math.max(0, Math.min(1, KDGameData.HeelPowerEffective / 4));
 	if (KDBoundPowerLevel > 1) KDBoundPowerLevel = 1;
 	if (KinkyDungeonStatsChoice.get("BoundPower")) {
-		KinkyDungeonApplyBuffToEntity(KinkyDungeonPlayerEntity, {
+		KDApplyBuffToEntity(KinkyDungeonPlayerEntity, {
 			id:"BoundPower",
 			type: "Evasion",
 			constant: true, duration: 1,
@@ -1853,7 +1854,7 @@ function KinkyDungeonUpdateStats(delta: number): void {
 		if (KinkyDungeonSleepiness > 2.99) {
 			KinkyDungeonSlowLevel = Math.max(KinkyDungeonSlowLevel, 2);
 			//KinkyDungeonBlindLevel = Math.max(KinkyDungeonBlindLevel + Math.floor(KinkyDungeonSleepiness/2), 5);
-			KinkyDungeonApplyBuffToEntity(KinkyDungeonPlayerEntity, {
+			KDApplyBuffToEntity(KinkyDungeonPlayerEntity, {
 				id: "Sleepy",
 				aura: "#767676ff",
 				type: "AttackStamina",
@@ -1915,7 +1916,7 @@ function KinkyDungeonUpdateStats(delta: number): void {
 
 	if (!KinkyDungeonHasWill(0.1)) {
 		// Add Surrender debuff
-		KinkyDungeonApplyBuffToEntity(KinkyDungeonPlayerEntity, {
+		KDApplyBuffToEntity(KinkyDungeonPlayerEntity, {
 			id: "NoWP",
 			duration: 1,
 			buffSprite: true,
@@ -1925,13 +1926,13 @@ function KinkyDungeonUpdateStats(delta: number): void {
 			power: 1,
 			flashing: true,
 		});
-		KinkyDungeonApplyBuffToEntity(KinkyDungeonPlayerEntity, {
+		KDApplyBuffToEntity(KinkyDungeonPlayerEntity, {
 			id: "NoWP2",
 			duration: 1,
 			type: "BlockPenalty",
 			power: 1,
 		});
-		KinkyDungeonApplyBuffToEntity(KinkyDungeonPlayerEntity, {
+		KDApplyBuffToEntity(KinkyDungeonPlayerEntity, {
 			id: "NoWP3",
 			duration: 1,
 			type: "RestraintBlockPenalty",
@@ -2737,7 +2738,7 @@ function KDAddDenial(entity: entity, amount: number) {
 	let power = (buff?.power || 0) + amount;
 	if (power > 0) {
 		if (buff) buff.power = power;
-		else KinkyDungeonApplyBuffToEntity(entity, {
+		else KDApplyBuffToEntity(entity, {
 			id: "Denial",
 			type: "DenialBonus",
 			hide: true,
