@@ -1256,7 +1256,7 @@ function KDChangeStamina(src: string, type: string, trig: string, Amount: number
 	)) {
 		let amt = KDCorsetTrainingMult * (stamPre - KinkyDungeonStatStamina);
 		KDTickTraining("Corset", KDGameData.CorsetPower > 0, !KDGameData.CorsetPower, 
-			amt + (KDGameData.CorsetPower), 1 + KDGameData.CorsetPower * 2);
+			amt + (KDGameData.CorsetPower), 0.3 + KDGameData.CorsetPower * 2.7);
 	}
 	return KinkyDungeonStatStamina - stamPre;
 }
@@ -2489,7 +2489,8 @@ function KinkyDungeonDoTryOrgasm(Bonus?: number, Auto?: number) {
 		KDChangeBalanceSrc(data.auto ? "auto" : "player", "orgasm", "tryOrgasm", (KDBaseBalanceDmgLevel + KDGameData.HeelPowerEffective) / KDBaseBalanceDmgLevel * 0.5*-KDBalanceDmgMult() * 4*KDFitnessMult(), true, true);
 		KinkyDungeonSendEvent("orgasm", data);
 
-		KDAddDenial(KDPlayer(), KDDenialFromOrgasm);
+		let amt = KDEntityGetBuff(KDPlayer(), "Denial")?.power || 0;
+		KDAddDenial(KDPlayer(), KDDenialFromOrgasm + KDDenialFromOrgasmMult * (amt));
 
 	} else {
 		KDChangeStamina(data.auto ? "auto" : "player", "edge", "tryOrgasm", data.edgespcost);
@@ -2709,27 +2710,41 @@ interface KDDenialData {
 	base: number,
 	mult: number,
 	bonus: number,
+	willReq: number,
+	effectiveWill: number,
+
 }
 
-function KDGetDenialLevel(entity: entity) {
+let KDBaseDenialWillLevel = 5;
+
+function KDGetDenialLevel(entity: entity, willMult: boolean = true) {
 	let data: KDDenialData = {
 		entity: entity,
 		base: KDDenialFactorBase,
 		mult: KinkyDungeonMultiplicativeStat(-KDEntityBuffedStat(entity, "DenialMult")),
 		bonus: KDEntityBuffedStat(entity, "DenialBonus"),
+		willReq: willMult ? KDBaseDenialWillLevel : KinkyDungeonStatWillMax, // willpower starts decreasing the bonus when it's lower than this
+		effectiveWill: KinkyDungeonStatWill,
 	};
 
 	KinkyDungeonSendEvent("beforeCalcDenialLevel", data);
 	KinkyDungeonSendEvent("calcDenialLevel", data);
 	KinkyDungeonSendEvent("afterCalcDenialLevel", data);
 
-	return (data.base + data.bonus) * data.mult;
+	return (data.base + (
+		// willpower is needed to gain the denial bonus
+		data.bonus * Math.max(0, Math.min(1, 
+			data.effectiveWill / data.willReq
+		))
+	)) * data.mult;
 }
 
 let KDDenialDuration = 10;
 let KDDenialFactorBase = 100;
 let KDDenialFromDeny = 25;
 let KDDenialFromOrgasm = -100;
+/** 25% of current denial */
+let KDDenialFromOrgasmMult = -0.25;
 let KDDenialFromEdge = 5;
 let KDDenialChangeFactor = -0.05;
 

@@ -1759,6 +1759,12 @@ function KinkyDungeonActivateWeaponSpell(instant = false) {
 			KinkyDungeonCrystalWarningTime = CommonTime();
 			return true;
 		}
+		let staminaCost =  KinkyDungeonPlayerDamage.special.minStamina || KinkyDungeonPlayerDamage.special.staminaCost;
+		if (staminaCost && !KinkyDungeonHasStamina(staminaCost)) {
+			KinkyDungeonSendActionMessage(8, TextGet("KinkyDungeonInsufficientStamina"), KDBaseRed, 1);
+			KinkyDungeonCrystalWarningTime = CommonTime();
+			return true;
+		}
 		if (KinkyDungeonPlayerDamage.special.prereq && KDPrereqs[KinkyDungeonPlayerDamage.special.prereq] && !KDPrereqs[KinkyDungeonPlayerDamage.special.prereq](KinkyDungeonPlayerEntity, undefined, {})) {
 			KinkyDungeonSendActionMessage(8, TextGet("KDPrereqFail" + KinkyDungeonPlayerDamage.special.prereq), KDBaseRed, 1);
 			return true;
@@ -3202,7 +3208,9 @@ function KDProcessBuffIcons(minXX: number, minYY: number, side: boolean = false)
 		//DrawTextFitKD(TextGet("KinkyDungeonPlayerStatisfied"), X3, 900 - i * 35, 260, KDBasePink, "#333333"); i++;
 	} else if (KDGameData.OrgasmTurns > KinkyDungeonOrgasmTurnsCrave) {
 		statsDraw.sex = {
-			text: TextGet("KinkyDungeonPlayerEdged"),
+			text: TextGet("KinkyDungeonPlayerEdged", {
+				Denial: Math.round(KDEntityBuffedStat(KDPlayer(), "DenialBonus"))
+			}),
 			icon: "Edged",
 			category: "kinky", color: KDBaseRed, bgcolor: "#333333", priority: 7,
 		};
@@ -3210,7 +3218,9 @@ function KDProcessBuffIcons(minXX: number, minYY: number, side: boolean = false)
 	}
 	if (KDGameData.CurrentVibration  && KDGameData.CurrentVibration.denyTimeLeft > 0) {
 		statsDraw.deny = {
-			text: TextGet("KinkyDungeonPlayerDenied"),
+			text: TextGet("KinkyDungeonPlayerDenied", {
+				Denial: Math.round(KDEntityBuffedStat(KDPlayer(), "DenialBonus"))
+			}),
 			icon: "Denied",
 			category: "kinky", color: KDBaseRed, bgcolor: "#333333", priority: 12,
 		};

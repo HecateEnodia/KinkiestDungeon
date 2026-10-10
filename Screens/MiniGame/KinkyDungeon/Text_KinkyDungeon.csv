@@ -821,8 +821,8 @@ KinkyDungeonPlayerDamageBuff,"You deal PERCENT more DAMAGETYPE damage."
 KinkyDungeonPlayerBindBuff,"Your bindings are PERCENT more effective."
 KinkyDungeonPlayerDamage,"Your attacks deal a base of DAMAGEDEALT DAMAGETYPE damage, for a stamina cost of STMNA."
 KinkyDungeonPlayerPlugged,"Plugged!"
-KinkyDungeonPlayerPluggedExtreme,"Plugged up!!!"
-KinkyDungeonPlayerDenied,"Denied! You won't be getting off that easy~"
+KinkyDungeonPlayerPluggedExtreme,"Plugged!!!"
+KinkyDungeonPlayerDenied,"Denied! You won't be getting off that easy~ (Denial Level: ${Denial}%)"
 KinkyDungeonPlayerVibrated0,"Teasing vibrations..."
 KinkyDungeonPlayerVibrated1,"Gentle vibrations..."
 KinkyDungeonPlayerVibrated2,"Mild vibrations..."
@@ -1986,7 +1986,7 @@ KinkyDungeonVibing3,Your toys are buzzing strongly!
 KinkyDungeonVibing4,Your toys vibrate intensely!
 KinkyDungeonVibing5,The vibration is torturous!
 
-KinkyDungeonPlayerEdged,"Edged!"
+KinkyDungeonPlayerEdged,"Edged! (Denial Level: ${Denial}%"
 KinkyDungeonPlayerStatisfied,"Satisfied. Miscast chance is reduced."
 
 
@@ -11796,6 +11796,7 @@ KinkyDungeonRemindJailChaseZombieCommandAssault,"Come... here..."
 KinkyDungeonRemindJailChaseZombieCommandBlock,"*giggles*"
 
 KinkyDungeonInsufficientEnergy,"Out of charge. Use a crystal to recharge."
+KinkyDungeonInsufficientStamina,"Not enough stamina."
 KinkyDungeonSpecialDragonslaver,Target an enemy: Attack with Dragonslaver. Target a tile: Spend 8 charge to launch binding belts
 KinkyDungeonSpecialTheEncaser,"25 charge to enter Slime Form for 25 turns, and create slime around yourself."
 KinkyDungeonSpecialFourSeasons,"50 charge to reduce mana cost of next fire, earth, air, and water spell by 50 (once for each element)"
